@@ -1,0 +1,1 @@
+Solutions to the tasks from AI-devs 4 challenge.
