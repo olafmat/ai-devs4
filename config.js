@@ -38,6 +38,7 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY?.trim() ?? "";
 const requestedProvider = process.env.AI_PROVIDER?.trim().toLowerCase() ?? "";
 const hasOpenAIKey = Boolean(OPENAI_API_KEY);
 const hasOpenRouterKey = Boolean(OPENROUTER_API_KEY);
+const AIDEVS_KEY = process.env.AIDEVS_KEY?.trim() ?? "";
 
 if (!hasOpenAIKey && !hasOpenRouterKey) {
   console.error("\x1b[31mError: API key is not set\x1b[0m");
@@ -260,5 +261,4 @@ export const buildResponsesRequest = ({ model, tools, plugins, webSearch = false
   return request;
 };
 
-// Backward-compatible alias used in existing examples.
-export { OPENAI_API_KEY, OPENROUTER_API_KEY };
+export { OPENAI_API_KEY, OPENROUTER_API_KEY, AIDEVS_KEY };

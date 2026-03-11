@@ -1,5 +1,6 @@
 {
-  "name": "ai-devs-examples",
+  "name": "ai-devs-4-challenge",
+  "author": "Olaf Matyja",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,6 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "task1:start": "npm install --prefix ./01_01_task && node ./01_01_task/app.js"
+    "task1:start": "npm install --prefix ./01_01_task && node ./01_01_task/app.js",
+    "task2:start": "npm install --prefix ./01_02_task && node ./01_02_task/app.js"
   }
 }
