@@ -73,29 +73,70 @@ export const tools = [
   },
   {
     type: "function",
-    name: "get_distance",
-    description: "Computes a distance between two points on Earth",
+    name: "get_nearest_power_plant",
+    description: "Finds the power plant closest to any past location of a given person. Returns the code of the nearest power plant and the distance",
     parameters: {
       type: "object",
       properties: {
-        longitude1: {
-          type: "number",
-          description: "Longitude of the first point"
+        person: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "First name of the person"
+            },
+            surname: {
+              type: "string",
+              description: "Last name of the person"
+            }
+          },
+          required: ["name", "surname"],
+          additionalProperties: false
         },
-        latitude1: {
-          type: "number",
-          description: "Latitude of the first point"
+        locations: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              latitude: {
+                type: "number",
+                description: "Latitude of the person"
+              },
+              longitude: {
+                type: "number",
+                description: "Longitude of the person"
+              }
+            },
+            required: ["latitude", "longitude"],
+            additionalProperties: false
+          },
+          description: "List of the past locations of a person"
         },
-        longitude2: {
-          type: "number",
-          description: "Longitude of the second point"
-        },
-        latitude2: {
-          type: "number",
-          description: "Latitude of the second point"
+        plants: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              code: {
+                type: "string",
+                description: "Code of the power plant"
+              },
+              latitude: {
+                type: "number",
+                description: "Latitude of the power plant"
+              },
+              longitude: {
+                type: "number",
+                description: "Longitude of the power plant"
+              }
+            },
+            required: ["code", "latitude", "longitude"],
+            additionalProperties: false
+          },
+          description: "List of the power plants with their codes and coordinates"
         }
       },
-      required: ["longitude1", "latitude1", "longitude2", "latitude2"],
+      required: ["person", "locations", "plants"],
       additionalProperties: false
     },
     strict: true
@@ -103,7 +144,7 @@ export const tools = [
   {
     type: "function",
     name: "verify",
-    description: "Verify if the answer is correct",
+    description: "Verify if the answer is correct. Returns a flag or an error",
     parameters: {
       type: "object",
       properties: {

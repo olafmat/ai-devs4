@@ -69,14 +69,15 @@ const chat = async (conversation) => {
   throw new Error(`Tool calling did not finish within ${MAX_TOOL_STEPS} steps.`);
 };
 
-const query = "Get list of power plant locations and list of persons.\n" +
-"For every person:\n" +
-"1. Get list of his locations\n" +
-"2. Compare the resulting locations with power plant locations.\n" +
-"   You must lookup the approximate geographic coordinates based on the city near the power plant.\n" +
-"For the person and power plant which are closest to each other:\n" +
-"3. Get the access level of the person\n" +
-"4. Verify the data using verify tool"
+const query = "Get the list of power plants and the list of persons.\n" +
+"1. Find an approximate geographic coordinates of each power plant based on the city near the power plant.\n" +
+"2. For every person:\n" +
+"2.1. Get list of his locations\n" +
+"2.2. Find the nearest power plant to the places from this list.\n" +
+"2.3. Get the access level of the person\n" +
+"2.4. Verify the data using verify tool\n" +
+"2.5. If the verification passes, return the flag"
+
 
 logQuestion(query);
 
