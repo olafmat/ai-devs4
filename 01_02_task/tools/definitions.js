@@ -78,21 +78,6 @@ export const tools = [
     parameters: {
       type: "object",
       properties: {
-        person: {
-          type: "object",
-          properties: {
-            name: {
-              type: "string",
-              description: "First name of the person"
-            },
-            surname: {
-              type: "string",
-              description: "Last name of the person"
-            }
-          },
-          required: ["name", "surname"],
-          additionalProperties: false
-        },
         locations: {
           type: "array",
           items: {
@@ -136,7 +121,7 @@ export const tools = [
           description: "List of the power plants with their codes and coordinates"
         }
       },
-      required: ["person", "locations", "plants"],
+      required: ["locations", "plants"],
       additionalProperties: false
     },
     strict: true

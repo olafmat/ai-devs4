@@ -42,10 +42,7 @@ export const handlers = {
         throw new Error(message);
       }
 
-      return {
-        person,
-        locations: data
-      };
+      return data
   },
 
   async get_access_level(person) {
@@ -104,9 +101,7 @@ export const handlers = {
       console.log(nearestPlant);
       console.log(bestDistance);
       return {
-        person: data.person,
-        nearestLocation,
-        nearestPlant,
+        code: nearestPlant.code,
         distance: bestDistance
       };
   },
@@ -128,10 +123,14 @@ export const handlers = {
       console.log(data);
 
       if (!response.ok || data.error) {
-        const message = data?.error?.message ?? `Request failed with status ${response.status}`;
-        return {error: message};
+        return {
+          verification: "failed"
+        };
       }
 
-      return data;
+      return {
+        verification: "succeeded",
+        ...data
+      }
   }
 };
