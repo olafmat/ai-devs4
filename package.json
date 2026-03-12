@@ -9,6 +9,7 @@
   },
   "scripts": {
     "task1:start": "npm install --prefix ./01_01_task && node ./01_01_task/app.js",
-    "task2:start": "npm install --prefix ./01_02_task && node ./01_02_task/app.js"
+    "task2:start": "npm install --prefix ./01_02_task && node ./01_02_task/app.js",
+    "task3:start": "npm install --prefix ./01_03_task && node ./01_03_task/app.js"
   }
 }
