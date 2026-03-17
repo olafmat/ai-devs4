@@ -1,4 +1,4 @@
-import { AIDEVS_KEY } from "../../config.js";
+import { HUB_URL, AIDEVS_KEY } from "../../config.js";
 import { setTimeout } from "timers/promises";
 
 export const handlers = {
@@ -7,7 +7,7 @@ export const handlers = {
   },
 
   async execute(operation) {
-    const response = await fetch("${HUB_URL}/verify", {
+    const response = await fetch(`${HUB_URL}/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

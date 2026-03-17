@@ -1,4 +1,5 @@
 import {
+  HUB_URL,
   AI_API_KEY,
   buildResponsesRequest,
   EXTRA_API_HEADERS,

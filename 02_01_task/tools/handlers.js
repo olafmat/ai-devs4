@@ -1,4 +1,4 @@
-import { AIDEVS_KEY } from "../../config.js";
+import { HUB_URL, AIDEVS_KEY } from "../../config.js";
 import { setTimeout } from "timers/promises";
 
 export const handlers = {
@@ -20,7 +20,7 @@ export const handlers = {
   },
 
   async reset() {
-    const response = await fetch("${HUB_URL}/verify", {
+    const response = await fetch(`${HUB_URL}/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -42,7 +42,7 @@ export const handlers = {
   async categorize({prompt}) {
     console.log(`Prompt ${prompt}`);
     try {
-        const response = await fetch("${HUB_URL}/verify", {
+        const response = await fetch(`${HUB_URL}/verify`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

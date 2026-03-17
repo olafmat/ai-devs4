@@ -1,6 +1,6 @@
 import { readdir, readFile, writeFile, unlink, mkdir, stat } from "fs/promises";
 import { resolveSandboxPath } from "../utils/sandbox.js";
-import { AIDEVS_KEY } from "../../config.js";
+import { HUB_URL, AIDEVS_KEY } from "../../config.js";
 
 export const handlers = {
   async list_files({ path }) {
@@ -47,7 +47,7 @@ export const handlers = {
     const fullPath = resolveSandboxPath(path);
     const declaration = await readFile(fullPath, "utf-8");
 
-    const response = await fetch("${HUB_URL}/verify", {
+    const response = await fetch(`${HUB_URL}/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

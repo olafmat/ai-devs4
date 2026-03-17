@@ -9,6 +9,14 @@ const RESPONSES_ENDPOINTS = {
   openai: "https://api.openai.com/v1/responses",
   openrouter: "https://openrouter.ai/api/v1/responses"
 };
+const EMBEDDINGS_ENDPOINTS = {
+  openai: "https://api.openai.com/v1/embeddings",
+  openrouter: "https://openrouter.ai/api/v1/embeddings"
+};
+const CHAT_API_BASE_URLS = {
+  openai: "https://api.openai.com/v1",
+  openrouter: "https://openrouter.ai/api/v1"
+};
 const OPENROUTER_ONLINE_SUFFIX = ":online";
 const VALID_OPENAI_SEARCH_CONTEXT_SIZES = new Set(["low", "medium", "high"]);
 const VALID_OPENROUTER_WEB_ENGINES = new Set(["native", "exa"]);
@@ -39,6 +47,7 @@ const requestedProvider = process.env.AI_PROVIDER?.trim().toLowerCase() ?? "";
 const hasOpenAIKey = Boolean(OPENAI_API_KEY);
 const hasOpenRouterKey = Boolean(OPENROUTER_API_KEY);
 const AIDEVS_KEY = process.env.AIDEVS_KEY?.trim() ?? "";
+const HUB_URL = process.env.HUB_URL?.trim() ?? "";
 
 if (!hasOpenAIKey && !hasOpenRouterKey) {
   console.error("\x1b[31mError: API key is not set\x1b[0m");
@@ -75,6 +84,8 @@ const resolveProvider = () => {
 export const AI_PROVIDER = resolveProvider();
 export const AI_API_KEY = AI_PROVIDER === "openai" ? OPENAI_API_KEY : OPENROUTER_API_KEY;
 export const RESPONSES_API_ENDPOINT = RESPONSES_ENDPOINTS[AI_PROVIDER];
+export const EMBEDDINGS_API_ENDPOINT = EMBEDDINGS_ENDPOINTS[AI_PROVIDER];
+export const CHAT_API_BASE_URL = CHAT_API_BASE_URLS[AI_PROVIDER];
 export const OPENROUTER_EXTRA_HEADERS = {
   ...(process.env.OPENROUTER_HTTP_REFERER
     ? { "HTTP-Referer": process.env.OPENROUTER_HTTP_REFERER }
@@ -261,4 +272,4 @@ export const buildResponsesRequest = ({ model, tools, plugins, webSearch = false
   return request;
 };
 
-export { OPENAI_API_KEY, OPENROUTER_API_KEY, AIDEVS_KEY };
+export { OPENAI_API_KEY, OPENROUTER_API_KEY, HUB_URL, AIDEVS_KEY };

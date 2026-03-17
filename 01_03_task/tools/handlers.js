@@ -1,4 +1,5 @@
 import {
+  HUB_URL,
   AIDEVS_KEY
 } from "../../config.js";
 import { readFile } from "fs/promises";
@@ -6,7 +7,7 @@ import { resolve } from "path";
 
 export const handlers = {
   async check_package(params) {
-      const response = await fetch("${HUB_URL}/api/packages", {
+      const response = await fetch(`${HUB_URL}/api/packages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +31,7 @@ export const handlers = {
   },
 
   async redirect_package(params) {
-      const response = await fetch("${HUB_URL}/api/packages", {
+      const response = await fetch(`${HUB_URL}/api/packages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

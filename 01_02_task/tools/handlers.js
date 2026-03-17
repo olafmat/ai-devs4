@@ -1,4 +1,5 @@
 import {
+  HUB_URL,
   AIDEVS_KEY
 } from "../../config.js";
 import { readFile } from "fs/promises";
@@ -24,7 +25,7 @@ export const handlers = {
   },
 
   async get_person_locations(person) {
-      const response = await fetch("${HUB_URL}/api/location", {
+      const response = await fetch(`${HUB_URL}/api/location`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +47,7 @@ export const handlers = {
   },
 
   async get_access_level(person) {
-      const response = await fetch("${HUB_URL}/api/accesslevel", {
+      const response = await fetch(`${HUB_URL}/api/accesslevel`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -107,7 +108,7 @@ export const handlers = {
   },
 
   async verify(answer) {
-      const response = await fetch("${HUB_URL}/verify", {
+      const response = await fetch(`${HUB_URL}/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -1,0 +1,122 @@
+import {
+  HUB_URL,
+  AI_API_KEY,
+  EXTRA_API_HEADERS,
+  RESPONSES_API_ENDPOINT
+} from "./config.js";
+import { writeFile } from "fs/promises";
+//import { recordUsage } from "./stats.js";
+
+const extractResponseText = (data) => {
+  if (typeof data?.output_text === "string" && data.output_text.trim()) {
+    return data.output_text;
+  }
+
+  const messages = Array.isArray(data?.output)
+    ? data.output.filter((item) => item?.type === "message")
+    : [];
+
+  const textPart = messages
+    .flatMap((message) => (Array.isArray(message?.content) ? message.content : []))
+    .find((part) => part?.type === "output_text" && typeof part?.text === "string");
+
+  return textPart?.text ?? "";
+};
+
+/**
+ * Calls the Responses API.
+ */
+export const chat = async ({
+  model,
+  input,
+  tools,
+  toolChoice = "auto",
+  instructions,
+  maxOutputTokens = 16384
+}) => {
+  const body = { model, input };
+
+  if (tools?.length) body.tools = tools;
+  if (tools?.length) body.tool_choice = toolChoice;
+  if (instructions) body.instructions = instructions;
+  if (maxOutputTokens) body.max_output_tokens = maxOutputTokens;
+
+  const response = await fetch(RESPONSES_API_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${AI_API_KEY}`,
+      ...EXTRA_API_HEADERS
+    },
+    body: JSON.stringify(body)
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || data.error) {
+    throw new Error(data?.error?.message || `Responses API request failed (${response.status})`);
+  }
+
+  //recordUsage(data.usage);
+  return data;
+};
+
+export async function download_image(url) {
+    const response = await fetch(url);
+    const blob = await response.arrayBuffer();
+    const image = Buffer.from(blob).toString('base64');
+    return image;
+}
+
+export async function save_base64_image_to_file(base64Image, filePath) {
+  const buffer = Buffer.from(base64Image, "base64");
+  await writeFile(filePath, buffer);
+}
+
+/**
+ * Calls a vision-capable model with an image.
+ */
+export const vision = async ({ imageBase64, mimeType, question, visionModel }) => {
+  const response = await fetch(RESPONSES_API_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${AI_API_KEY}`,
+      ...EXTRA_API_HEADERS
+    },
+    body: JSON.stringify({
+      model: visionModel,
+      input: [
+        {
+          role: "user",
+          content: [
+            { type: "input_text", text: question },
+            { type: "input_image", image_url: `data:${mimeType};base64,${imageBase64}` }
+          ]
+        }
+      ]
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || data.error) {
+    throw new Error(data?.error?.message || `Vision request failed (${response.status})`);
+  }
+
+  // recordUsage(data.usage);
+  return extractResponseText(data) || "No response";
+};
+
+/**
+ * Extracts function calls from response.
+ */
+export const extractToolCalls = (response) =>
+  (response.output ?? []).filter((item) => item.type === "function_call");
+
+/**
+ * Extracts text content from response.
+ */
+export const extractText = (response) => {
+  return extractResponseText(response) || null;
+};
