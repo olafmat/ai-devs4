@@ -16,7 +16,8 @@
     "task6": "npm install --prefix ./02_01_task && node ./02_01_task/app.js",
     "task7": "npm install --prefix ./02_02_task && node ./02_02_task/app.js",
     "task8:docker": "docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password neo4j:5",
-    "task8": "npm install --prefix ./02_03_task && node ./02_03_task/app.js"
+    "task8": "npm install --prefix ./02_03_task && node ./02_03_task/app.js",
+    "task9": "npm install --prefix ./02_04_task && node ./02_04_task/app.js"
   },
   "dependencies": {
     "sharp": "^0.34.0",
