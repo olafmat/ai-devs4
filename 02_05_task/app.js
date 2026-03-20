@@ -49,6 +49,7 @@ const requestResponse = async (input) => {
   });
 
   const data = await response.json();
+  console.log(data);
   if (!response.ok) throw new Error(data?.error?.message ?? `Request failed (${response.status})`);
   return data;
 };
@@ -75,42 +76,38 @@ const chat = async (conversation) => {
   throw new Error(`Tool calling did not finish within ${MAX_TOOL_STEPS} steps.`);
 };
 
-async function analyzeImage(imageUrl) {
-    const query = `Which rectangle contains dam?
-        Produce a text "(x,y)" where x is a column and y is a row.
-        Don't add anything else.
-        Rows and columns are 1-indexed from the top-left.`
-
-    const answer = await vision({
-      imageUrl,
-      question: query,
-      visionModel: model
-    });
-
+async function solve(query) {
+    logQuestion(query);
+    const answer = await chat([{ role: "user", content: query }]);
     logAnswer(answer);
     return answer;
 }
 
-async function solve() {
-    let found = false;
-    const coords = await analyzeImage(
-      `${HUB_URL}/data/${AIDEVS_KEY}/drone.png`
-    );
 
-    do {
-        const query = `
-        You are a drone operator in a computer game.
-        Download the drone API documentation and produce a series of instructions, which will send the drone to destination PWR6132PL
-        and attack location ${coords}.
-        You can try more than once, pay attention to the answers from the API.
-        If successful you should get a flag {FLG: ...}. Output the flag.`;
+const mainFlag = await solve(
+    `You are a drone operator in a computer game.
+    Download the drone API documentation and produce a series of instructions, which will send the drone to destination PWR6132PL
+    and attack a dam.
 
-        logQuestion(query);
+    Location of the dam can be determined by analysis of the image at ${HUB_URL}/data/${AIDEVS_KEY}/drone.png
+    There is a grid on that image. Rows and columns are 1-indexed from the top-left.
 
-        const answer = await chat([{ role: "user", content: query }]);
-        logAnswer(answer);
-        found = answer.includes("FLG")
-    } while (!found);
-}
+    You can try more than once, pay attention to the answers from the API.
+    If successful you should get a flag {FLG: ...}. Output the flag.`
+);
 
-await solve();
+const secret = await solve(
+    `You are a drone operator in a computer game.
+    Download the drone API documentation and produce a series of instructions, which will send the drone to destination PWR8406PL,
+    set the LED color to fuchsia, take an image and return to the base.
+    You can try more than once, pay attention to the answers from the API.
+
+    Localize a baloon on that image.
+    There will be a grid on that image. Rows and columns are 1-indexed from the top-left.
+
+    After this fly the drone again to that location, set the LED color to fuchsia, and attack the baloon.
+    After successful attack another image should be fetched which should contain a flag {FLG: ...}. Output the flag.`
+);
+
+console.log(mainFlag);
+console.log(secret);

@@ -14,6 +14,27 @@ export const tools = [
   },
   {
     type: "function",
+    name: "analyze_image",
+    description: "Call subagent which analyzes an image",
+    parameters: {
+      type: "object",
+      properties: {
+        image_url: {
+          type: "string",
+          description: "URL to the image"
+        },
+        prompt: {
+          type: "string",
+          description: "Prompt for the subagent"
+        }
+      },
+      required: ["image_url", "prompt"],
+      additionalProperties: false
+    },
+    strict: true
+  },
+  {
+    type: "function",
     name: "fly",
     description: "Execute specific series of the drone instructions.",
     parameters: {

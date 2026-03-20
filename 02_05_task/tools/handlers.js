@@ -1,15 +1,21 @@
-import { HUB_URL, AIDEVS_KEY } from "../../config.js";
+import {
+  HUB_URL,
+  AI_API_KEY,
+  AIDEVS_KEY,
+  buildResponsesRequest,
+  EXTRA_API_HEADERS,
+  RESPONSES_API_ENDPOINT,
+  resolveModelForProvider,
+} from "../../config.js";
+import {
+  logAnswer,
+  logQuestion,
+} from "../helper.js";
+import {
+  vision
+} from "../../api.js";
 
-async function download_image(url) {
-    const response = await fetch(url);
-    const blob = await response.arrayBuffer();
-    const image = Buffer.from(blob).toString('base64');
-    return {
-        image,
-        encoding: "base64",
-        mime_type: "image/png"
-    };
-};
+const model = resolveModelForProvider("gpt-5.4");
 
 export const handlers = {
   async get_documentation() {
@@ -23,6 +29,17 @@ export const handlers = {
     return {
         html: await response.text()
     }
+  },
+
+  async analyze_image({image_url, prompt}) {
+      const answer = await vision({
+        imageUrl: image_url,
+        question: prompt,
+        visionModel: model
+      });
+
+      logAnswer(answer);
+      return { answer };
   },
 
   async fly({instructions}) {
