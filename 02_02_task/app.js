@@ -137,9 +137,7 @@ async function analyze(url_initial, url_target) {
     const image_combined = await stack_images_vertical(image_initial, image_target);
     await save_base64_image_to_file(image_combined, "d:/springworkspace/ai-devs4/02_02_task/electricity.png");
     const answer = await vision({
-      imageBase64: image_combined,
-      //imageBase64: await read_file("d:/springworkspace/ai-devs4/01_05_task/sandbox/docs/trasy-wylaczone.png", true),
-      mimeType: "image/png",
+      imageUrl: `data:image/png;base64,${image_combined}`,
       question: query,
       visionModel: model
     });

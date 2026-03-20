@@ -76,7 +76,7 @@ export async function save_base64_image_to_file(base64Image, filePath) {
 /**
  * Calls a vision-capable model with an image.
  */
-export const vision = async ({ imageBase64, mimeType, question, visionModel }) => {
+export const vision = async ({ imageUrl, question, visionModel }) => {
   const response = await fetch(RESPONSES_API_ENDPOINT, {
     method: "POST",
     headers: {
@@ -91,7 +91,7 @@ export const vision = async ({ imageBase64, mimeType, question, visionModel }) =
           role: "user",
           content: [
             { type: "input_text", text: question },
-            { type: "input_image", image_url: `data:${mimeType};base64,${imageBase64}` }
+            { type: "input_image", image_url: imageUrl }
           ]
         }
       ]
@@ -99,6 +99,7 @@ export const vision = async ({ imageBase64, mimeType, question, visionModel }) =
   });
 
   const data = await response.json();
+  console.log(data)
 
   if (!response.ok || data.error) {
     throw new Error(data?.error?.message || `Vision request failed (${response.status})`);
