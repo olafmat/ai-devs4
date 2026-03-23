@@ -1,5 +1,5 @@
 {
-  "name": "02_03_graph_agents",
+  "name": "02_03_task",
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env app.js",
