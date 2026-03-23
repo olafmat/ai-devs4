@@ -12,7 +12,7 @@ import {
   getToolCalls,
   logAnswer,
   logQuestion,
-} from "./helper.js";
+} from "../helpers.js";
 import {
   tools,
   handlers

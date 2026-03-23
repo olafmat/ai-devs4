@@ -1,5 +1,3 @@
-import { readdir, readFile, writeFile, unlink, mkdir, stat } from "fs/promises";
-import sharp from "sharp";
 import {
   HUB_URL,
   AI_API_KEY,
@@ -10,17 +8,12 @@ import {
   resolveModelForProvider,
 } from "../config.js";
 import {
-  download_image,
-  vision,
-  save_base64_image_to_file
-} from "../api.js";
-import {
   buildNextConversation,
   getFinalText,
   getToolCalls,
   logAnswer,
   logQuestion,
-} from "./helper.js";
+} from "../helpers.js";
 import {
   tools,
   handlers

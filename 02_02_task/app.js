@@ -10,17 +10,15 @@ import {
   resolveModelForProvider,
 } from "../config.js";
 import {
-  download_image,
-  vision,
-  save_base64_image_to_file
-} from "../api.js";
-import {
   buildNextConversation,
   getFinalText,
   getToolCalls,
   logAnswer,
   logQuestion,
-} from "./helper.js";
+  download_image,
+  vision,
+  save_base64_image_to_file
+} from "../helpers.js";
 import {
   tools,
   handlers

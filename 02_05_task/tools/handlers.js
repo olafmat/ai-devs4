@@ -1,19 +1,12 @@
 import {
   HUB_URL,
-  AI_API_KEY,
   AIDEVS_KEY,
-  buildResponsesRequest,
-  EXTRA_API_HEADERS,
-  RESPONSES_API_ENDPOINT,
   resolveModelForProvider,
 } from "../../config.js";
 import {
   logAnswer,
-  logQuestion,
-} from "../helper.js";
-import {
   vision
-} from "../../api.js";
+} from "../../helpers.js";
 
 const model = resolveModelForProvider("gpt-5.4");
 
