@@ -151,6 +151,114 @@ export const vision = async ({ imageUrl, question, visionModel }) => {
   return extractResponseText(data) || "No response";
 };
 
+/**
+ * Calls the LLM and forces it to respond with JSON matching the requested format.
+ *
+ * @param {object} params
+ * @param {string} params.prompt
+ * @param {object|string} params.jsonFormat - Either a JS object (example) or a JSON-schema-like string.
+ * @param {string} params.outputModel
+ * @returns {Promise<any>} Parsed JSON result.
+ */
+export const structuredOutput = async ({ prompt, jsonFormat, outputModel }) => {
+  // If caller provides a ready-to-use schema (like in 01_01_task), use it directly.
+  const isJsonSchemaFormat =
+    jsonFormat
+    && typeof jsonFormat === "object"
+    && jsonFormat.type === "json_schema"
+    && typeof jsonFormat.schema === "object";
+
+  const inferType = (value) => {
+    if (value === null) {
+      // We often use null in examples to indicate "may be null".
+      // Default to string-or-null as a practical fallback.
+      return { type: ["string", "null"] };
+    }
+
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        return { type: "array", items: { type: "string" } };
+      }
+      return { type: "array", items: inferType(value[0]) };
+    }
+
+    const t = typeof value;
+    if (t === "string") return { type: "string" };
+    if (t === "number") return { type: "number" };
+    if (t === "boolean") return { type: "boolean" };
+
+    if (t === "object") {
+      const props = {};
+      const required = [];
+
+      for (const [k, v] of Object.entries(value)) {
+        props[k] = inferType(v);
+        required.push(k);
+      }
+
+      return {
+        type: "object",
+        properties: props,
+        required,
+        additionalProperties: false,
+      };
+    }
+
+    // Fallback for unexpected JSON types.
+    return { type: ["string", "null"] };
+  };
+
+  const schemaFormat = (() => {
+    if (isJsonSchemaFormat) return jsonFormat;
+
+    // Treat non-schema input as an example object and infer a JSON schema from it.
+    if (jsonFormat === undefined) {
+      throw new Error("jsonFormat is required");
+    }
+
+    const inferred = inferType(jsonFormat);
+    return {
+      type: "json_schema",
+      name: "structured_output",
+      strict: true,
+      schema: inferred,
+    };
+  })();
+
+  const response = await fetch(RESPONSES_API_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${AI_API_KEY}`,
+      ...EXTRA_API_HEADERS
+    },
+    body: JSON.stringify({
+      model: outputModel,
+      input: prompt,
+      // Structured Outputs: constrain model output to exactly this JSON schema.
+      text: { format: schemaFormat },
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok || data.error) {
+    throw new Error(data?.error?.message || `structuredOutput request failed (${response.status})`);
+  }
+
+  // When a model refuses, Responses API can include `refusal` field.
+  if (data?.refusal) {
+    throw new Error(`Model refused: ${data.refusal}`);
+  }
+
+  const text = extractResponseText(data) || "";
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Model did not return valid JSON matching schema. Raw output:\n${text}`);
+  }
+};
+
 export const extractText = (response) => {
   return extractResponseText(response) || null;
 };
+

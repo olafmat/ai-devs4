@@ -5,7 +5,7 @@ import {
   RESPONSES_API_ENDPOINT,
   resolveModelForProvider
 } from "../config.js";
-import { extractResponseText } from "../helpers.js";
+import { structuredOutput } from "../helpers.js";
 
 const MODEL = resolveModelForProvider("gpt-5.4");
 const AIDEVS_KEY = process.env.AIDEVS_KEY?.trim() ?? "";
@@ -25,34 +25,11 @@ async function getPersonTable() {
 }
 
 async function extractPerson(text) {
-  const response = await fetch(RESPONSES_API_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${AI_API_KEY}`,
-      ...EXTRA_API_HEADERS
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      input: `Extract person information from CSV with fields name,surname,gender,birthDate,birthPlace,birthCountry,job: ${text}`,
-      text: { format: personSchema }
-    })
+  return await structuredOutput({
+    prompt: `Extract person information from CSV with fields name,surname,gender,birthDate,birthPlace,birthCountry,job: ${text}`,
+    jsonFormat: personSchema,
+    outputModel: MODEL,
   });
-
-  const data = await response.json();
-
-  if (!response.ok || data.error) {
-    const message = data?.error?.message ?? `Request failed with status ${response.status}`;
-    throw new Error(message);
-  }
-
-  const outputText = extractResponseText(data);
-
-  if (!outputText) {
-    throw new Error("Missing text output in API response");
-  }
-
-  return JSON.parse(outputText);
 }
 
 const personSchema = {
