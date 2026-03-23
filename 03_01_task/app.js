@@ -8,15 +8,15 @@ import {
 } from "../helpers.js";
 import { Readable } from "node:stream";
 import unzipper from "unzipper";
-import pLimit from 'p-limit';
 
 const model = resolveModelForProvider("gpt-5-nano");
 
 var files = {};
 
-const classifySentiment = async (text) => {
+const classifySentiment = async (lines) => {
+  //console.log(JSON.stringify(lines));
   return await structuredOutput({
-    prompt: `Is anything failing, suspicious, unusual, unexpected, unstable, concerning, untrustworthy or requiring maintenance or investigation reported in this text: "${text}"`,
+    prompt: `Which lines suggest problems with the sensor?\n${JSON.stringify(lines)}`,
     jsonFormat: sentimentSchema,
     outputModel: model,
   });
@@ -24,26 +24,31 @@ const classifySentiment = async (text) => {
 
 const sentimentSchema = {
   type: "json_schema",
-  name: "suspicious",
+  name: "lines",
   strict: true,
   schema: {
     type: "object",
     properties: {
-      suspicious: {
-        type: ["boolean"]
+      problems: {
+        type: "array",
+        items: {
+          type: ["number"]
+        },
+        description: "Array of line ids with problems"
       }
     },
-    required: ["suspicious"],
+    required: ["problems"],
     additionalProperties: false
   }
 };
 
 
-const process = async (path, text) => {
+const process = (path, text) => {
   const json = JSON.parse(text);
   if (!json || !json.sensor_type || !json.operator_notes) {
     return false;
   }
+  json.operator_notes = json.operator_notes.split(',')[0];
 
   let cached = files[json.operator_notes];
   if (cached === undefined) {
@@ -51,29 +56,20 @@ const process = async (path, text) => {
       files: []
     };
     files[json.operator_notes] = cached;
-    console.log(`Requested ${path}`);
-    try {
-      const resp = await classifySentiment(json.operator_notes);
-      cached.llmAnswer = !!resp.suspicious
-      if (cached.llmAnswer) {
-        console.log(`Answered ${path}: ${json.operator_notes}\n${JSON.stringify(resp)}`)
-      } else {
-        console.log(`Answered ${path}`)
-      }
-    } catch (error) {
-      console.log(text);
-      console.log(error);
-      cached.llmAnswer = false;
-    }
-  } else {
-    console.log(`From cache ${path}`);
   }
   cached.files.push({
     path,
-    json
+    json: {...json}
   })
-  //console.log(`State: ${JSON.stringify(cached)}`);
+  /*if (json.operator_notes !== cached.files[cached.files.length - 1].json.operator_notes) {
+    console.log('ERROR_LAST ' + cached.files.length)
+    console.log(json.operator_notes);
+    console.log(cached.files[cached.files.length - 1].json.operator_notes);
+  }*/
 }
+
+let totalOkData = 0;
+let llmComplains = 0;
 
 const evaluate = (file, llmAnswer) => {
   const json = file.json;
@@ -84,29 +80,63 @@ const evaluate = (file, llmAnswer) => {
   const isVoltage = sensors.includes("voltage");
   const isHumidity = sensors.includes("humidity")
 
+  //let negative = false;
   let failure = '';
-  if (isTemp ? !(json.temperature_K >= 553 && json.temperature_K <= 873) : json.temperature_K !== 0) {
-    failure = 'temp';
+  if (
+    typeof json.sensor_type !== 'string' ||
+    typeof json.timestamp !== 'number' ||
+    typeof json.temperature_K !== 'number' ||
+    typeof json.pressure_bar !== 'number' ||
+    typeof json.water_level_meters !== 'number' ||
+    typeof json.voltage_supply_v !== 'number' ||
+    typeof json.humidity_percent !== 'number' ||
+    typeof json.operator_notes !== 'string'
+  ) {
+    failure = 'structure';
   }
-  if (isPressure ? !(json.pressure_bar >= 60 && json.pressure_bar <= 160) : json.pressure_bar !== 0) {
-    failure = 'pressure';
-  }
-  if (isWater ? !(json.water_level_meters >= 5.0 && json.water_level_meters <= 15.0) : json.water_level_meters !== 0) {
-    failure = 'water';
-  }
-  if (isVoltage ? !(json.voltage_supply_v >= 229.0 && json.voltage_supply_v <= 231.0) : json.voltage_supply_v !== 0) {
-    failure = 'voltage';
-  }
-  if (isHumidity ? !(json.humidity_percent >= 40.0 && json.humidity_percent <= 80.0) : json.humidity_percent !== 0) {
-    failure = 'humidity';
+  if (sensors.filter(sensor => sensor !== 'temperature' && sensor !=='pressure' && sensor !== 'water' && sensor !== 'voltage' && sensor !== 'humidity').length > 0) {
+    failure = 'sensors';
   }
 
-  if ((failure !== '') !== llmAnswer) {
-    console.log("\n")
+  if (isTemp ? !(json.temperature_K >= 553 && json.temperature_K <= 873) : (json.temperature_K !== 0)) {
+    failure = 'temp';
+    //negative = !isTemp;
+  }
+  if (isPressure ? !(json.pressure_bar >= 60 && json.pressure_bar <= 160) : (json.pressure_bar !== 0)) {
+    failure = 'pressure';
+    //negative = !isPressure;
+  }
+  if (isWater ? !(json.water_level_meters >= 5.0 && json.water_level_meters <= 15.0) : (json.water_level_meters !== 0)) {
+    failure = 'water';
+    //negative = !isWater;
+  }
+  if (isVoltage ? !(json.voltage_supply_v >= 229.0 && json.voltage_supply_v <= 231.0) : (json.voltage_supply_v !== 0)) {
+    failure = 'voltage';
+    //negative = !isVoltage;
+  }
+  if (isHumidity ? !(json.humidity_percent >= 40.0 && json.humidity_percent <= 80.0) : (json.humidity_percent !== 0)) {
+    failure = 'humidity';
+    //negative = !isHumidity;
+  }
+
+  if (failure !== '') {
+    /*if (negative) {
+      console.log("strange");
+      console.log(failure);
+      console.log(JSON.stringify(json));
+    }*/
+  } else {
+    totalOkData++;
+  }
+  if (llmAnswer) {
+    llmComplains++;
+  }
+  if ((failure !== '') || llmAnswer) {
+    /*console.log("\n")
     console.log(json);
     console.log(failure);
     console.log(llmAnswer);
-    console.log("not ok\n");
+    console.log("not ok\n");*/
     return false;
   }
 
@@ -120,13 +150,11 @@ const processSensorsZip = async () => {
   }
 
   const zipStream = Readable.fromWeb(response.body);
-  const threads = [];
-  const limit = pLimit(50);
 
   for await (const entry of zipStream.pipe(unzipper.Parse({ forceStream: true }))) {
     const isJsonFile = entry.type === "File" && entry.path.toLowerCase().endsWith(".json");
     if (!isJsonFile) {
-      entry.autodrain();
+      await entry.autodrain();
       continue;
     }
 
@@ -134,24 +162,55 @@ const processSensorsZip = async () => {
 
     //if (["9604.json","8076.json","8410.json","8457.json","0307.json","4237.json","5000.json","0158.json","9614.json","9717.json","9848.json","0753.json","8369.json","0567.json","1269.json","2958.json"].includes(entry.path)) {
     //if (entry.path === '3713.json' || entry.path === '4342.json') {
-      threads.push(limit(() => process(entry.path, text)));
+      process(entry.path, text);
     //}
   }
 
-  await Promise.all(threads);
+  //console.log(files);
+  let question = {lines: []};
+  let n = 0;
+  for (const [note, entry] of Object.entries(files)) {
+      question.lines.push({
+        id: n,
+        note        
+      })
+      n++;
+  }
+
+  const answer = await classifySentiment(question);
+  let bad = answer.problems;
 
   let found = [];
+  n = 0;
+  let total = 0;
   for (const [note, entry] of Object.entries(files)) {
+    const llmAnswer = bad.includes(n);
+    //console.log(llmAnswer + "\t" + note);
+    total += entry.files.length;
     for (const file of entry.files) {
-      const ok = evaluate(file, entry.llmAnswer);
+      /*if (file.json.operator_notes != note) {
+        console.log("ERROR");
+        console.log(file);
+        console.log(note);
+      }
+      if (llmAnswer) {
+        console.log(n + "\t" + file.path);
+      }*/
+      const ok = evaluate(file, llmAnswer);
       if (!ok) {
-        //console.log(note);
-        //console.log(JSON.stringify(file));
+        /*console.log(note);
+        console.log(file.path);
+        console.log(JSON.stringify(file));*/
         found.push(file.path);
       }
     }
+    n++;
   }
+  found.sort();
   console.log(JSON.stringify(found));
+  /*console.log(totalOkData);
+  console.log(llmComplains);*/
+  //console.log(totalBad);
 }
 
 const extractFlag = (text) => {
@@ -193,7 +252,6 @@ const lookForSecret = async () => {
   }
 
   const zipStream = Readable.fromWeb(response.body);
-  const threads = [];
 
   for await (const entry of zipStream.pipe(unzipper.Parse({ forceStream: true }))) {
     const isJsonFile = entry.type === "File" && entry.path.toLowerCase().endsWith(".json");
