@@ -254,7 +254,7 @@ export const structuredOutput = async ({ prompt, jsonFormat, outputModel }) => {
   try {
     return JSON.parse(text);
   } catch {
-    throw new Error(`Model did not return valid JSON matching schema. Raw output:\n${text}`);
+    throw new Error(`Model did not return valid JSON matching schema. Raw output:\n${data}`);
   }
 };
 

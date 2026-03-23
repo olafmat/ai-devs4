@@ -1,0 +1,15 @@
+{
+  "name": "03_01_task",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Task 5",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "p-limit": "^7.3.0",
+    "unzipper": "^0.12.3"
+  },
+  "license": "ISC"
+}
