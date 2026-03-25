@@ -77,7 +77,7 @@ export const logAnswer = (text) => {
 };
 
 export const executeToolCall = async (call, handlers) => {
-  const args = JSON.parse(call.arguments);
+  const args = call.arguments ? JSON.parse(call.arguments) : {};
   const handler = handlers[call.name];
 
   if (!handler) {
