@@ -48,6 +48,7 @@ const hasOpenAIKey = Boolean(OPENAI_API_KEY);
 const hasOpenRouterKey = Boolean(OPENROUTER_API_KEY);
 const AIDEVS_KEY = process.env.AIDEVS_KEY?.trim() ?? "";
 const HUB_URL = process.env.HUB_URL?.trim() ?? "";
+const PINGGY_LINK = process.env.PINGGY_LINK.trim() ?? "";
 
 if (!hasOpenAIKey && !hasOpenRouterKey) {
   console.error("\x1b[31mError: API key is not set\x1b[0m");
@@ -272,4 +273,4 @@ export const buildResponsesRequest = ({ model, tools, plugins, webSearch = false
   return request;
 };
 
-export { OPENAI_API_KEY, OPENROUTER_API_KEY, HUB_URL, AIDEVS_KEY };
+export { OPENAI_API_KEY, OPENROUTER_API_KEY, HUB_URL, AIDEVS_KEY, PINGGY_LINK };
