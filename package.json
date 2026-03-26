@@ -21,10 +21,7 @@
     "task10": "npm install --prefix ./02_05_task && node ./02_05_task/app.js",
     "task11": "npm install --prefix ./03_01_task && node ./03_01_task/app.js",
     "task12": "npm install --prefix ./03_02_task && node ./03_02_task/app.js",
-    "task13": "npm install --prefix ./03_03_task && node ./03_03_task/app.js"
-  },
-  "dependencies": {
-    "sharp": "^0.34.0",
-    "tiktoken": "^1.0.22"
+    "task13": "npm install --prefix ./03_03_task && node ./03_03_task/app.js",
+    "task14": "npm install --prefix ./03_04_task && node ./03_04_task/app.js"
   }
 }
