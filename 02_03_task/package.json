@@ -1,6 +1,7 @@
 {
   "name": "02_03_task",
   "type": "module",
+  "description": "Task 8",
   "scripts": {
     "start": "node --env-file=.env app.js",
     "dev": "node --env-file=.env --watch app.js"

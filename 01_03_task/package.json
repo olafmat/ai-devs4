@@ -2,7 +2,7 @@
   "name": "01_03_task",
   "version": "1.0.0",
   "type": "module",
-  "description": "Task 1",
+  "description": "Task 3",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
