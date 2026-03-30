@@ -1,0 +1,14 @@
+{
+  "name": "04_01_task",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Task 16",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "agent-browser": "^0.23.1"
+  }
+}
