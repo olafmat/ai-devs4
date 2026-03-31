@@ -24,6 +24,6 @@
     "task13": "npm install --prefix ./03_03_task && node ./03_03_task/app.js",
     "task14": "npm install --prefix ./03_04_task && node ./03_04_task/app.js",
     "task15": "npm install --prefix ./03_05_task && node ./03_05_task/app.js",
-    "task16": "npm install --prefix ./04_01_task && node ./04_01_task/app.js && ${AGENT_BROWSER} close --all"
+    "task16": "npm install --prefix ./04_01_task && node ./04_01_task/app.js"
   }
 }
