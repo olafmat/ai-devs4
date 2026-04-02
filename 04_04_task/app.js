@@ -30,9 +30,9 @@ const main = async () => {
   await ensureSchema(driver);
 
   // 3. Index workspace
-  log.start("Indexing workspace...");
-  await indexWorkspace(driver, "workspace");
-  log.success("Indexing complete");
+  //log.start("Indexing workspace...");
+  //await indexWorkspace(driver, "workspace");
+  //log.success("Indexing complete");
 
   // 4. Agent tools
   const tools = createTools(driver);

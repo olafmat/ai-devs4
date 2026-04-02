@@ -1,0 +1,14 @@
+{
+  "name": "04_04_task",
+  "type": "module",
+  "description": "Task 19",
+  "scripts": {
+    "start": "node --env-file=.env app.js",
+    "dev": "node --env-file=.env --watch app.js"
+  },
+  "dependencies": {
+    "neo4j-driver": "^5.27.0",
+    "unzipper": "^0.12.3",
+    "tiktoken": "^1.0.22"
+  }
+}
