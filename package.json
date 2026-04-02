@@ -26,6 +26,7 @@
     "task15": "npm install --prefix ./03_05_task && node ./03_05_task/app.js",
     "task16": "npm install --prefix ./04_01_task && node ./04_01_task/app.js",
     "task17": "npm install --prefix ./04_02_task && node ./04_02_task/app.js",
+    "task18": "npm install --prefix ./04_03_task && node ./04_03_task/app.js",
     "task19": "npm install --prefix ./04_04_task && node ./04_04_task/app.js",
     "task19:docker": "docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password neo4j:5"
   }
