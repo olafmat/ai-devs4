@@ -86,7 +86,7 @@ export const executeToolCall = async (call, handlers) => {
 
   logToolCall(call.name, args);
   const result = await handler(args);
-  logToolResult(result);
+  // logToolResult(result);
 
   return {
     type: "function_call_output",

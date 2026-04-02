@@ -1,0 +1,11 @@
+{
+  "name": "04_02_task",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Task 17",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "ISC"
+}
