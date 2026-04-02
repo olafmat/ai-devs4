@@ -74,8 +74,8 @@ const chat = async (conversation) => {
   throw new Error(`Tool calling did not finish within ${MAX_TOOL_STEPS} steps.`);
 };
 
-const query = `Your goal is to protect the wind turbine when the wind is too strong by changing the pitch angle to 90,
-and also find a moment when the energy can be safely generated and set the pitch angle to 0.
+const query = `Your goal is to protect the wind turbine when the wind is too strong by changing the pitch angle,
+and also find a moment when the energy can be safely generated and set the appropriate pitch angle.
 You have only 40 seconds for the task, and some operations take even 25 seconds.
 
 The plan:

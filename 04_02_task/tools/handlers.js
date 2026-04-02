@@ -22,7 +22,17 @@ const execute1 = async (operation, silent) => {
       body: JSON.stringify(body)
     });
 
+    for (const pair of response.headers.entries()) {
+        const header = `${pair[0]}=${pair[1]}`;
+        if (header.includes("{FLG:")) {
+            console.log(header);
+        }
+    }
     const data = await response.json();
+    if (JSON.stringify(data).includes("{FLG:")) {
+        console.log(JSON.stringify(data));
+    }
+
     const result = {
         status: response.status,
         data
@@ -71,13 +81,14 @@ export const handlers = {
   async unlockCodeGenerator({configs}) {
     for (const {startDate, startHour, windMs, pitchAngle} of configs) {
         waiting++;
-        await execute({
+        const res = await execute({
             action: "unlockCodeGenerator",
             startDate,
             startHour: `${startHour < 10 ? '0' : ''}${startHour}:00:00`,
             windMs,
             pitchAngle
         });
+        //console.log(JSON.stringify(res));
     };
     return {status: `Generation of ${waiting} unlock codes scheduled`}
   },
@@ -166,7 +177,7 @@ export const handlers = {
     return {results: out};
   },
 
-  async planner({minOperationalWindMs, cutoffWindMs, forecast}) {
+  async planner({minOperationalWindMs, cutoffWindMs, shutdownAngle, productionAngle, forecast}) {
     let out = [];
     let lastPlan = "start";
     let produced = false;
@@ -181,6 +192,7 @@ export const handlers = {
                 startDate: state.startDate,
                 startHour: state.startHour,
                 windMs: state.windMs,
+                pitchAngle: plan === 'shut down turbine' ? shutdownAngle : productionAngle,
                 plan
             })
             lastPlan = plan;

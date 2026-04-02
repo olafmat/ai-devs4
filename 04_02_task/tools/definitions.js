@@ -134,9 +134,17 @@ export const tools = [
             cutoffWindMs: {
                 type: "number",
                 description: "Maximum wind speed for a turbine to operate"
+            },
+            shutdownAngle: {
+                type: "number",
+                description: "Angle to disable electricity production and protect against strong wind"
+            },
+            productionAngle: {
+                type: "number",
+                description: "Angle for maximizing of electricity production"
             }
         },
-        required: ["minOperationalWindMs", "cutoffWindMs"],
+        required: ["minOperationalWindMs", "cutoffWindMs", "shutdownAngle", "productionAngle"],
         additionalProperties: false
     },
     strict: true
