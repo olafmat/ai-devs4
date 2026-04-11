@@ -8,6 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
+    "ensure:files-mcp": "npm install --prefix ./mcp/files-mcp && cross-env FS_ROOTS=05_01_task/workspace node ./ensure-files-mcp.mjs",
     "task1": "npm install --prefix ./01_01_task && node ./01_01_task/app.js",
     "task2": "npm install --prefix ./01_02_task && node ./01_02_task/app.js",
     "task3": "npm install --prefix ./01_03_task && node ./01_03_task/app.js",
@@ -27,8 +28,12 @@
     "task16": "npm install --prefix ./04_01_task && node ./04_01_task/app.js",
     "task17": "npm install --prefix ./04_02_task && node ./04_02_task/app.js",
     "task18": "npm install --prefix ./04_03_task && node ./04_03_task/app.js",
-    "task19": "npm install --prefix ./04_04_task && node ./04_04_task/app.js",
     "task19:docker": "docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password neo4j:5",
-    "task20": "npm install --prefix ./04_05_task && node ./04_05_task/app.js"
+    "task19": "npm install --prefix ./04_04_task && node ./04_04_task/app.js",
+    "task20": "npm install --prefix ./04_05_task && node ./04_05_task/app.js",
+    "task21": "npm install --prefix ./05_01_task && npm run ensure:files-mcp && node ./05_01_task/app.js"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
   }
 }

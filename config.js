@@ -43,6 +43,7 @@ if (existsSync(ROOT_ENV_FILE) && typeof process.loadEnvFile === "function") {
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY?.trim() ?? "";
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY?.trim() ?? "";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY?.trim() ?? "";
 const requestedProvider = process.env.AI_PROVIDER?.trim().toLowerCase() ?? "";
 const hasOpenAIKey = Boolean(OPENAI_API_KEY);
 const hasOpenRouterKey = Boolean(OPENROUTER_API_KEY);
@@ -275,4 +276,4 @@ export const buildResponsesRequest = ({ model, tools, plugins, webSearch = false
   return request;
 };
 
-export { OPENAI_API_KEY, OPENROUTER_API_KEY, HUB_URL, AIDEVS_KEY, PINGGY_LINK, OKO_URL, AGENT_BROWSER };
+export { OPENAI_API_KEY, OPENROUTER_API_KEY, GEMINI_API_KEY, HUB_URL, AIDEVS_KEY, PINGGY_LINK, OKO_URL, AGENT_BROWSER };
