@@ -1,0 +1,11 @@
+{
+  "name": "05_05_task",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "agent-browser": "^0.23.1"
+  }
+}

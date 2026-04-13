@@ -1,5 +1,4 @@
 import { HUB_URL, OKO_URL, AIDEVS_KEY, AGENT_BROWSER } from "../../config.js";
-import { setTimeout } from "timers/promises";
 import { spawn } from 'child_process'
 
 const session = `SESSION-${Math.floor(Math.random()*1000000)}`;
@@ -50,7 +49,7 @@ export const handlers = {
     if ((command.includes("open") || command.includes(".com")) && !command.includes(OKO_URL)) {
         return {error: `You can only open sites inside ${OKO_URL} with this browser`};
     }
-    const child = spawn(AGENT_BROWSER, `--session ${session} ${command}`.split(' '), { encoding: 'utf-8' });
+    const child = spawn('04_01_task' + AGENT_BROWSER, `--session ${session} ${command}`.split(' '), { encoding: 'utf-8' });
 
     return await new Promise((resolve, reject) => {
         let stdout = '';

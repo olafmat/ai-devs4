@@ -34,7 +34,8 @@
     "task21": "npm install --prefix ./05_01_task && npm run ensure:files-mcp && node ./05_01_task/app.js",
     "task22": "npm install --prefix ./05_02_task && node ./05_02_task/app.js",
     "task23": "npm install --prefix ./05_03_task && node ./05_03_task/app.js",
-    "task24": "npm install --prefix ./05_04_task && node ./05_04_task/app.js"
+    "task24": "npm install --prefix ./05_04_task && node ./05_04_task/app.js",
+    "task25": "npm install --prefix ./05_05_task && node ./05_05_task/app.js"
   },
   "devDependencies": {
     "cross-env": "^10.1.0"
