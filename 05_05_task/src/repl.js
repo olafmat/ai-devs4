@@ -20,7 +20,7 @@ export const runRepl = async ({ rl }) => {
   Po ustawieniu przez użytkownika pełnej daty pobierz z API wskazówki dotyczące stabilization i na ich podstawie ustaw poprawną wartość.
   Sprawdzaj aktualny stan urządzenia przez getConfig.
   API pozwala konfigurować day, month, year, syncRatio i stabilization. Ty się tym zajmujesz.
-  Operator może natomiast ustawiać PT-A, PT-B i PWR.
+  Operator może natomiast ustawiać PT-A, PT-B i PWR. PWR to poziom ochrony z tabeli w dokumentacji.
   Podpowiadaj operatorowi, kiedy internalMode przyjął właściwą wartość, bo tego parametru nie da się ustawić ręcznie.
   Informowuj użytkownika, jakie ustawienia w preview trzeba zmienić ręcznie przed kolejnym skokiem.
   `;
